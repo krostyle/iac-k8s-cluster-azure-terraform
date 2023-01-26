@@ -1,0 +1,18 @@
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform variable files
+*.tfvars
+*.auto.tfvars
+
+# Private key files
+id_rsa
+id_dsa
+
+# Sensitive files
+*.pem
+*.ppk
+
+#Terraform folder
+.terraform/
