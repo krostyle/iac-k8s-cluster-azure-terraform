@@ -60,9 +60,17 @@ resource "azurerm_kubernetes_cluster" "k8s-cluser-aks-demo" {
     min_count           = var.np_min_count
     max_count           = var.np_max_count
   }
-  # identity {
-  #   type = "SystemAssigned"
-  # }
+  #add node pool additional
+  node_pool {
+    name                = "nodepool2"
+    node_count          = 1
+    vm_size             = "Standard_D2_v2"
+    vnet_subnet_id      = azurerm_subnet.subnet-aks-demo.id
+    enable_auto_scaling = true
+    min_count           = 1
+    max_count           = 3
+    max_pods            = 80
+  }
   service_principal {
     client_id     = var.sp_client_id
     client_secret = var.sp_client_secret
@@ -77,40 +85,11 @@ resource "azurerm_kubernetes_cluster" "k8s-cluser-aks-demo" {
   }
 }
 
-# #Network Interface
-# resource "azurerm_network_interface" "nic-demo" {
-#   name                = "nic-demo"
-#   location            = azurerm_resource_group.rg-demo.location
-#   resource_group_name = azurerm_resource_group.rg-demo.name
-
-#   ip_configuration {
-#     name                          = "ipconfig1"
-#     subnet_id                     = azurerm_subnet.subnet-demo.id
-#     private_ip_address_allocation = "Dynamic"
-#     public_ip_address_id          = azurerm_public_ip.pip-demo.id
-#   }
-# }
-
-# #Linux Virtual Machine
-# resource "azurerm_linux_virtual_machine" "vm-demo" {
-#   name                            = "vm-demo"
-#   resource_group_name             = azurerm_resource_group.rg-demo.name
-#   location                        = azurerm_resource_group.rg-demo.location
-#   size                            = "Standard_B1s"
-#   admin_username                  = "azureuser"
-#   admin_password                  = "P@ssw0rd1234!"
-#   disable_password_authentication = false
-#   network_interface_ids           = [azurerm_network_interface.nic-demo.id]
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "Standard_LRS"
-#   }
-#   source_image_reference {
-#     publisher = "Canonical"
-#     offer     = "UbuntuServer"
-#     sku       = "18.04-LTS"
-#     version   = "latest"
-#   }
-#   computer_name = "vm-demo"
-# }
+resource "azurerm_kubernetes_cluster_node_pool" "extra-node" {
+  name                  = "adicional"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s-cluser-aks-demo.id
+  vm_size               = "Standard_D2_v2"
+  node_count            = 1
+  max_pods              = 80
+}
 

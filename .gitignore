@@ -14,5 +14,8 @@ id_dsa
 *.pem
 *.ppk
 
+#Provider specific files
+provider.tf
+
 #Terraform folder
 .terraform/
